@@ -22,7 +22,28 @@
         }
 
         .container {
-            max-width: 20rem;
+            max-width: 24rem;
+        }
+
+        .root {
+            position: relative;
+            font-weight: normal;
+            text-transform: lowercase;
+            text-decoration: overline;
+        }
+
+        .x-root::before {
+            content: "x";
+            position: absolute;
+            font-size: 0.9rem;
+            top: -9px;
+            left: -10px;
+        }
+
+        @media (max-width: 400px) {
+            button {
+                width: 3rem !important;
+            }
         }
     </style>
 </head>
@@ -31,9 +52,9 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-top mb-3">
-                <input value="0" type="text" class="form-control text-right" disabled maxlength="10"/>
+                <input value="0" type="text" class="form-control text-right" disabled maxlength="10" />
             </div>
-            <div class="card-body m-auto">
+            <div class="card-body m-auto buttons">
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-danger clear">c</button>
                     <button type="button" class="btn btn-raised btn-lg btn-danger clear">ce</button>
@@ -43,30 +64,34 @@
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">2</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">3</button>
                     <button type="button" class="btn btn-raised btn-lg btn-info op">*</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op" 
+                        style="text-transform: lowercase; font-weight: normal">x<sup>2</sup></button>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">4</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">5</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">6</button>
                     <button type="button" class="btn btn-raised btn-lg btn-info op">/</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">√</button>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">7</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">8</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">9</button>
                     <button type="button" class="btn btn-raised btn-lg btn-info op">-</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op"
+                        style="text-transform: lowercase; font-weight: normal">x<sup>y</sup></button>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary float">,</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">0</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary op">=</button>
                     <button type="button" class="btn btn-raised btn-lg btn-info op">+</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">√<span class="x-root root">y</span></button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- <script src="../js/math.js"></script>
-    <script src="../js/ui.js"></script> -->
     <script src="../js/constants.js"></script>
     <script src="../js/math.js"></script>
     <script src="../js/ui.js"></script>

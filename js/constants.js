@@ -3,7 +3,11 @@ const OPERATIONS = {
     SUB: "-",
     MUL: "*",
     DIV: "/",
-    EQUALS: "="
+    EQUALS: "=",
+    SQUARE: "x2",
+    POW: "xy",
+    SQRT: "√",
+    NTH_ROOT: "√y"
 }
 
 const CLEAR_KEYS = {

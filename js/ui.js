@@ -1,57 +1,50 @@
 class UI {
     constructor() {
         this.mathEngine = new MathEngine();
-        this.numberBtns = document.querySelectorAll('.number');
-        this.operationBtns = document.querySelectorAll('.op');
-        this.floatBtn = document.querySelector('.float');
-        this.clearBtns = document.querySelectorAll('.clear');
+        this.calculatorBtns = document.querySelector('.buttons');
         this.resultBar = document.querySelector('.form-control');
     }
 
     init() {
-        this.initNumberBtns();
-        this.initOperationBtns();
-        this.initClearBtns();
-        this.floatBtn.addEventListener('click', (e) => this.onFloatButtonClicked(e));
+        this.calculatorBtns.addEventListener('click', (e) => this.onAnyButtonClicked(e));
     }
 
-    initNumberBtns() {
-        this.numberBtns.forEach(numberBtn => {
-            numberBtn.addEventListener("click", (e) => this.onNumberClicked(e));
-        });
+    onAnyButtonClicked(e) {
+        const target = e.target.parentNode.type === "button" ? e.target.parentNode : e.target;  
+
+        if (target.classList.contains("number")) {
+            this.onNumberClicked(target);
+        }
+        else if (target.classList.contains("op")) {
+            this.onOperationClicked(target);
+        } 
+        else if (target.classList.contains("clear")) {
+            this.onClearClicked(target);
+        }
+        else if (target.classList.contains("float")) {
+            this.onFloatClicked();
+        }
     }
 
-    initOperationBtns() {
-        this.operationBtns.forEach(operationBtn => {
-            operationBtn.addEventListener('click', (e) => this.onOperationClicked(e));
-        });
-    }
-
-    initClearBtns() {
-        this.clearBtns.forEach(clearBtn => {
-            clearBtn.addEventListener('click', (e) => this.onClearClicked(e));
-        });
-    }
-
-    onNumberClicked(e) {
-        const num = e.target.textContent;
-        this.mathEngine.updateCurrentNumber(num);
+    onNumberClicked(numberBtn) {
+        const number = numberBtn.textContent;
+        this.mathEngine.updateCurrentNumber(number);
         this.resultBar.value = this.mathEngine.currentNumberInput;
     }
 
-    onClearClicked(e) {
-        const clearKey = e.target.textContent;
-        this.mathEngine.clear(clearKey);
+    onClearClicked(clearBtn) {
+        const clearOperation = clearBtn.textContent;
+        this.mathEngine.clear(clearOperation);
         this.resultBar.value = this.mathEngine.currentNumberInput;
     }
 
-    onOperationClicked(e) {
-        const operation = e.target.textContent;
+    onOperationClicked(operationBtn) {
+        const operation = operationBtn.textContent;
         this.mathEngine.operationChangeHandler(operation);
         this.resultBar.value = this.mathEngine.result;
     }
 
-    onFloatButtonClicked() {
+    onFloatClicked() {
         this.mathEngine.setNumberToFloat();
         this.resultBar.value = this.mathEngine.currentNumberInput;
     }
