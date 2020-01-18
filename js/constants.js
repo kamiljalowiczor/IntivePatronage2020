@@ -4,13 +4,25 @@ const OPERATIONS = {
     MUL: "*",
     DIV: "/",
     EQUALS: "=",
-    SQUARE: "x2",
     POW: "xy",
-    SQRT: "√",
-    NTH_ROOT: "√y"
+    POW_SHORT: "^",
+    NTH_ROOT: "√y",
+    NTH_ROOT_SHORT: "√",
 }
 
 const CLEAR_KEYS = {
     C: "c",
     CE: "ce"
+}
+
+const CHAR_TYPES = {
+    NUMBER: "number",
+    OPERATION: "operation",
+    PARENTHESIS: "parenthesis",
+    FLOAT: "float"
+}
+
+const PARENTHESES = {
+    LEFT: "(",
+    RIGHT: ")"
 }

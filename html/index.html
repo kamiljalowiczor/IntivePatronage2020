@@ -13,8 +13,10 @@
 
     <style>
         .form-control {
+            height: 3.5rem;
             padding: 1rem 1rem;
             font-size: 1.5rem;
+            text-align: center;
         }
 
         .btn {
@@ -22,7 +24,7 @@
         }
 
         .container {
-            max-width: 24rem;
+            max-width: 35rem;
         }
 
         .root {
@@ -52,48 +54,53 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-top mb-3">
-                <input value="0" type="text" class="form-control text-right" disabled maxlength="10" />
+                <input value="0" type="text" class="userInput form-control text-center" disabled />
+                <input value="" type="text" class="result form-control text-center" disabled />
             </div>
             <div class="card-body m-auto buttons">
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-danger clear">c</button>
                     <button type="button" class="btn btn-raised btn-lg btn-danger clear">ce</button>
+                    
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">1</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">2</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">3</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op">*</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op" 
-                        style="text-transform: lowercase; font-weight: normal">x<sup>2</sup></button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info parenthesis">(</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info parenthesis">)</button>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">4</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">5</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">6</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op">/</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op">√</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">+</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">-</button>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">7</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">8</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">9</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op">-</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op"
-                        style="text-transform: lowercase; font-weight: normal">x<sup>y</sup></button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">*</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">/</button>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary float">,</button>
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">0</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-secondary op">=</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op">+</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-secondary equals">=</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op"
+                        style="text-transform: lowercase; font-weight: normal">x<sup>y</sup></button>
                     <button type="button" class="btn btn-raised btn-lg btn-info op">√<span class="x-root root">y</span></button>
                 </div>
             </div>
         </div>
     </div>
+    
     <script src="../js/constants.js"></script>
+    <script src="../js/utils.js"></script>
     <script src="../js/math.js"></script>
+    <script src="../js/parser.js"></script>
+    <script src="../js/input.js"></script>
     <script src="../js/ui.js"></script>
     <script src="../js/app.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
