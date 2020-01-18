@@ -23,6 +23,24 @@
             width: 3.8rem;
         }
 
+        .rate {
+            font-size: 0.7rem !important;
+        }
+
+        .btn-dropdown {
+            width: 7.5rem;
+        }
+
+        .btn-group {
+            margin-top: 0rem !important;
+        }
+
+        .dropdown-menu {
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
+
         .container {
             max-width: 35rem;
         }
@@ -43,8 +61,12 @@
         }
 
         @media (max-width: 400px) {
-            button {
-                width: 3rem !important;
+            .btn {
+                width: 3rem;
+            }
+
+            .btn-dropdown {
+                width: 7rem;
             }
         }
     </style>
@@ -58,10 +80,23 @@
                 <input value="" type="text" class="result form-control text-center" disabled />
             </div>
             <div class="card-body m-auto buttons">
-                <div class="row m-auto">
-                    <button type="button" class="btn btn-raised btn-lg btn-danger clear">c</button>
-                    <button type="button" class="btn btn-raised btn-lg btn-danger clear">ce</button>
-                    
+                <div class="row btn-group btn-toolbar justify-content-end m-auto">
+                    <button type="button" class="btn btn-raised btn-lg btn-primary bid rate">BID</button>
+                    <button type="button" class="btn btn-raised btn-lg btn-dark ask rate">ASK</button>
+                </div>
+                <div class="btn-toolbar justify-content-between m-auto"> 
+                    <div class="row btn-group">
+                        <button type="button" class="btn btn-raised btn-lg btn-danger clear">c</button>
+                        <button type="button" class="btn btn-raised btn-lg btn-danger clear">ce</button>
+                    </div>
+                    <div class="row btn-group">
+                        <button type="button" class="btn btn-raised btn-dropdown btn-success dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Currency
+                        </button>
+                        <div class="dropdown-menu">
+                        </div>
+                    </div>
                 </div>
                 <div class="row m-auto">
                     <button type="button" class="btn btn-raised btn-lg btn-secondary number">1</button>
@@ -90,12 +125,14 @@
                     <button type="button" class="btn btn-raised btn-lg btn-secondary equals">=</button>
                     <button type="button" class="btn btn-raised btn-lg btn-info op"
                         style="text-transform: lowercase; font-weight: normal">x<sup>y</sup></button>
-                    <button type="button" class="btn btn-raised btn-lg btn-info op">√<span class="x-root root">y</span></button>
+                    <button type="button" class="btn btn-raised btn-lg btn-info op">√<span
+                            class="x-root root">y</span></button>
                 </div>
             </div>
         </div>
     </div>
     
+    <script src="../js/currency.js"></script>
     <script src="../js/constants.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/math.js"></script>

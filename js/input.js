@@ -6,7 +6,7 @@ class InputEngine {
     setDefault() {
         this.currentInput = "0";
         this.lastOperationSymbol = null;
-        this.lastInput = null;
+        this.lastInput = "0";
         this.isInputTouched = false;
     }
 
@@ -40,6 +40,9 @@ class InputEngine {
             case CHAR_TYPES.FLOAT:
                 this.setNumberToFloat();
                 break;
+            case CHAR_TYPES.CURRENCY:
+                this.handleCurrencyCodeAppending(character);
+                break;
             default: 
                 return;
         }
@@ -57,6 +60,10 @@ class InputEngine {
     }
 
     appendNumber(character) {
+        if(this.isLastCharacterCurrencyCode()) {
+            return;
+        }
+
         if (this.getLastCharacterOfInput() === PARENTHESES.RIGHT) {
             this.currentInput += ` * ${character}`;
         } else if (this.getLastNumberInCurrentInput() !== "0") { 
@@ -74,7 +81,7 @@ class InputEngine {
     handleOperationAppending(character) {
         this.updateFloatingPoint(); 
 
-        if (this.isLastCharacterNegativeNumberSymbol()) {
+        if (!this.isOperationCharacterPossibleToAppend()) {
             return;
         } else if (character === OPERATIONS.SUB && this.isNegativeNumberSymbolPossibleToAppend()) {
             this.appendNegativeNumberSymbol();
@@ -86,6 +93,10 @@ class InputEngine {
         if (!this.isInputTouched) { this.isInputTouched = true; }
     }
 
+    isOperationCharacterPossibleToAppend() {
+        return !(this.isLastCharacterNegativeNumberSymbol() || this.isLastCharacterCurrencyCode()) && !StringUtils.checkForCurrencyValueInput(this.currentInput)
+    }
+    
     isNegativeNumberSymbolPossibleToAppend() {
         return (this.isLastCharacterNonNumber() || !this.isInputTouched) && this.getLastCharacterOfInput() !== PARENTHESES.RIGHT;
     }
@@ -123,11 +134,19 @@ class InputEngine {
     }
 
     appendLeftParenthesis() {
+        if (!this.isInputTouched) {
+            this.currentInput = PARENTHESES.LEFT;
+            this.isInputTouched = true;
+            return;
+        }
+
         if (this.isMultiplicationOperatorNeededBeforeLeftParenthesis()) {
             this.handleOperationAppending(OPERATIONS.MUL); 
         }
-        this.currentInput += PARENTHESES.LEFT;
-        this.isInputTouched = true;
+
+        if (!StringUtils.checkForCurrencyValueInput(this.currentInput)) {
+            this.currentInput += PARENTHESES.LEFT;
+        } 
     }
 
     appendRightParenthesis() {
@@ -139,14 +158,55 @@ class InputEngine {
     }
 
     isMultiplicationOperatorNeededBeforeLeftParenthesis() {
-        return !this.isLastCharacterOperation() && this.getLastCharacterOfInput() !== PARENTHESES.LEFT;
+        return !this.isLastCharacterOperation() && this.getLastCharacterOfInput() !== PARENTHESES.LEFT && !this.isLastCharacterCurrencyCode();
     }
 
     isRightParenthesisPossibleToAppend() {
         return !this.isLastCharacterOperation() && this.getLastCharacterOfInput() !== PARENTHESES.LEFT && this.getParenthesesCount() - 1 >= 0;
     }
 
+    handleCurrencyCodeAppending(code) {
+        this.updateFloatingPoint(); 
+
+        if (StringUtils.checkForCurrencyValueInput(this.currentInput)) {
+            return;
+        }
+
+        if (this.getLastCharacterOfInput() === PARENTHESES.RIGHT) {
+            this.handleOperationAppending(OPERATIONS.MUL); 
+        }
+        
+        let lastNumber = "";
+
+        if (this.isCurrencyCodePossibleToAppend() && !this.isLastCharacterNonNumber()) {
+            lastNumber = this.getLastNumberAsCurrencyValue();
+        }
+
+        this.appendCurrencyCode(code, lastNumber); 
+    }
+
+    appendCurrencyCode(code, lastNumber) {
+        const codeToAppend = code + PARENTHESES.LEFT + lastNumber;
+        this.currentInput = this.isLastCharacterCurrencyCode() ? this.currentInput.slice(0, -3) + codeToAppend : this.currentInput + codeToAppend;
+
+        this.isInputTouched = true;
+    }
+
+    getLastNumberAsCurrencyValue() {
+        const lastNumber = this.getLastNumberInCurrentInput() + PARENTHESES.RIGHT;
+        this.currentInput = this.currentInput.slice(0, -lastNumber.length + 1);
+        return lastNumber;
+    }
+    
+    isCurrencyCodePossibleToAppend() {
+        return !this.isLastCharacterCurrencyCode() && !this.isLastCharacterOperation() && this.getLastCharacterOfInput() !== PARENTHESES.LEFT && !StringUtils.checkForCurrencyValueInput(this.currentInput);
+    }
+
     setNumberToFloat() {
+        if (this.isLastCharacterCurrencyCode()) {
+            return;
+        }
+
         if (!this.isFloatingPointSet()) {
             this.setFloatingPoint();
             this.isInputTouched = true;
@@ -171,7 +231,7 @@ class InputEngine {
 
     getParenthesesCount() {
         return StringUtils.getNumberOfOpenedParenthesesInInput(this.currentInput);
-    }
+    } 
 
     isLastCharacterOperation() {
         return StringUtils.checkForArithmeticalOperation(this.getLastCharacterOfInput())
@@ -183,6 +243,10 @@ class InputEngine {
 
     isLastCharacterNegativeNumberSymbol() {
         return this.currentInput.slice(-1) === OPERATIONS.SUB;
+    }
+
+    isLastCharacterCurrencyCode() {
+        return StringUtils.checkForCurrencyCode(this.currentInput.trim().slice(-3));
     }
 
     getLastCharacterOfInput() {
@@ -205,9 +269,9 @@ class InputEngine {
     clearEntry() {  
         if (this.lastInput !== null) {
             this.currentInput = this.lastInput;
-        }
+        } 
 
-        this.currentInput = this.currentInput.trim().slice(0, -1); 
+        this.currentInput = this.isLastCharacterCurrencyCode() ? this.currentInput.trim().slice(0, -3) : this.currentInput.trim().slice(0, -1);
 
         this.isLastCharacterOperation() ? this.lastOperationSymbol = this.getOperationSymbol(this.getLastCharacterOfInput()) : this.currentInput = this.currentInput.trim();
 
@@ -222,16 +286,24 @@ class InputEngine {
         return this.currentInput.length === 0 || (this.currentInput.length === 1 && this.getLastNumberInCurrentInput() === "0") // float -> CE
     }
 
-    isReadyToCalculate() {
+    isSyntaxCorrect() {
         this.updateFloatingPoint();
 
-        if (this.isLastCharacterNonNumber() && this.getLastCharacterOfInput() !== PARENTHESES.RIGHT) {
+        if (StringUtils.checkForScientificNotation(this.currentInput)) {
+            alert('Cannot calculate numbers in scientific notation');
             return false;
         }
 
+        if (this.isLastCharacterNonNumber() && this.getLastCharacterOfInput() !== PARENTHESES.RIGHT || this.isLastCharacterCurrencyCode()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    prepareToCalculate() {
         this.replaceNegativeNumberSymbolsWithMultiplication()        
         this.appendMissingParentheses();
-        return true;
     }
 
     replaceNegativeNumberSymbolsWithMultiplication() {

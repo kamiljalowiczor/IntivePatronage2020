@@ -19,7 +19,13 @@ const CHAR_TYPES = {
     NUMBER: "number",
     OPERATION: "operation",
     PARENTHESIS: "parenthesis",
-    FLOAT: "float"
+    FLOAT: "float",
+    CURRENCY: "currency"
+}
+
+const RATE_TYPES = {
+    BID: "bid",
+    ASK: "ask"
 }
 
 const PARENTHESES = {

@@ -18,8 +18,8 @@ class PostfixNotationParser {
     }
 
     parseEquationToArray(input) { 
-        const nonOperatorsRe = /-?[A-Z]+\(\d+\.?\d+\)|-?[0-9\.]+|-?\(|\)/;
-        const nonOperatorsSeperator = /(-?[A-Z]+\(\d+\.?\d+\)|-?[0-9\.]+|-?\(|\))/;
+        const nonOperatorsRe = /-?[A-Z]{3}\(\d{0,}\.?\d{0,}\)|-?[0-9\.]+|-?\(|\)/;
+        const nonOperatorsSeperator = /(-?[A-Z]{3}\(\d{0,}\.?\d{0,}\)|-?[0-9\.]+|-?\(|\))/;
         const operatorsRe = /\s[\*\/\-\+]\s|√|\^/g;
 
         let inputCopy = input.replace(operatorsRe, "#");
@@ -36,7 +36,7 @@ class PostfixNotationParser {
                 const operationSymbol = StringUtils.removeWhitespacesFromString(operatorsArray.shift());
                 this.equationArray.push(operationSymbol);
             } else {
-                this.equationArray.push(numbersAndParenthesesArray.shift());     
+                this.equationArray.push(numbersAndParenthesesArray.shift());
             }
         }); 
     }

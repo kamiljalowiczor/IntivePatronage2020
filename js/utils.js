@@ -12,7 +12,7 @@ class StringUtils {
     }
 
     static checkForParentheses(input) {
-        const parenthesesRe = /-?\(|\)/;
+        const parenthesesRe = /^-?\($|^\)$/;
         return parenthesesRe.test(input);
     }
 
@@ -21,6 +21,26 @@ class StringUtils {
         return floatingPointInNumberRe.test(input);
     }
 
+    static checkForCurrencyCode(input) {
+        const currencyCodeRe = /[A-Z]{3}/;
+        return currencyCodeRe.test(input);
+    }
+
+    static checkForCurrencyValueInput(input) {
+        const currencyValue = /[A-Z]{3}\(((\d+\.)?\d*)?$/;
+        return currencyValue.test(input);
+    }
+
+    static checkForCompleteCurrencyValueExpression(input) {
+        const completeCurrencyValue = /[A-Z]{3}\(((\d+\.)?\d*)\)$/;
+        return completeCurrencyValue.test(input);   
+    }
+
+    static checkForScientificNotation(input) {
+        const scientificNotationRe = /e\-|e\+/;
+        return scientificNotationRe.test(input);
+    }
+    
     static removeInvalidFloatingPointPlacement(input) {
         if (input.slice(-1) === ".") {
             input = input.slice(0, -1);
@@ -57,7 +77,7 @@ class StringUtils {
     }
 
     static getNumbersInInput(input) {
-        const arithmeticalOperationRe = /\s*[√\+\/\-\*\^]{1}\s*/;
+        const arithmeticalOperationRe = /[A-Z]{3}|\s*[√\+\/\-\*\^]{1}\s*/;
         const inputWithoutParentheses = this.removeParenthesesFromString(input);
         const numbersInInputArray = inputWithoutParentheses.split(arithmeticalOperationRe);
         return numbersInInputArray;

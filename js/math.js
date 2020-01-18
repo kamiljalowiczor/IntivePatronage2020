@@ -16,7 +16,7 @@ class PostfixNotationMathEngine {
     handleCalculatingOperation(operation) {
         let numberRight = this.generalArray.pop();
         let numberLeft = this.generalArray.pop();
-        
+
         this.currentOperation = numberLeft + ` ${operation} ` + numberRight;
 
         let result = this.calculateResult(operation, numberLeft, numberRight);
