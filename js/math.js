@@ -1,166 +1,89 @@
-class MathEngine {
+class PostfixNotationMathEngine {
     constructor() {
-        this.setDefault();
+        this.currentOperation = null;
+        this.generalArray = [];
     }
 
-    setDefault() {
-        this.currentNumberInput = "0";
-        this.result = 0;
-        this.operation = null;
-        this.isInputTouched = false;
-        this.isReadyToCalculate = true;
-        this.isFloatingPointSet = false;
+    calculatePostfixEquation(postfixEquationArray) {
+        postfixEquationArray.forEach(element => {
+            const isElementOperation = StringUtils.checkForArithmeticalOperation(element);
+            isElementOperation ?  this.handleCalculatingOperation(element) : this.generalArray.push(parseFloat(element));
+        }) 
+
+        return this.generalArray.pop();
     }
 
-    parseNumber() {
-        this.currentNumberInput = parseFloat(this.currentNumberInput);
+    handleCalculatingOperation(operation) {
+        let numberRight = this.generalArray.pop();
+        let numberLeft = this.generalArray.pop();
+
+        this.currentOperation = numberLeft + ` ${operation} ` + numberRight;
+
+        let result = this.calculateResult(operation, numberLeft, numberRight);
+        this.generalArray.push(result);
     }
 
-    resultToFixed() {
-        this.result = this.result.toFixed(12) * 1;
+    numberToFixed(number) {
+        return number.toFixed(10) * 1;
     }
 
-    updateCurrentNumber(number) {
-        if (this.currentNumberInput.length > 12) {
-            return;
-        }
-
-        this.isInputTouched ? this.currentNumberInput += number : this.setFirstDigit(number);
-
-        this.isReadyToCalculate = true;
-    }
-
-    setFirstDigit(number) {
-        if (number !== "0") {
-            this.currentNumberInput = number;
-            this.isInputTouched = true;
-        } else {
-            this.currentNumberInput = "0";
-        }
-    }
-
-    setNumberToFloat() {
-        if (!this.isFloatingPointSet) {
-            this.setFloatingPoint();
-            this.isFloatingPointSet = true;
-            this.isInputTouched = true;
-            this.isReadyToCalculate = true;
-        }
-    }
-
-    setFloatingPoint() {
-        this.isInputTouched ? this.currentNumberInput += "." : this.currentNumberInput = "0.";
-    }
-
-    operationChangeHandler(operation) {
-        const isOperationInstant = this.isOperationInstant(operation);
-        
-        if (isOperationInstant) {
-            this.setInstantOperation(operation);
-        }
-        
-        this.updateResult();
-
-        operation === OPERATIONS.EQUALS || isOperationInstant ? this.operation = null : this.operation = operation;
-
-        this.isInputTouched = false;
-        this.isReadyToCalculate = false;
-        this.isFloatingPointSet = false;
-    }
-
-    setInstantOperation(operation) {
-        if (!this.isInputTouched) {
-            this.currentNumberInput = this.result;
-        }
-        this.operation = operation;
-        this.isReadyToCalculate = true;
-    }
-
-    isOperationInstant(operation) {
+    calculateResult(operation, numberLeft, numberRight) {
+        let result;
         switch (operation) {
-            case OPERATIONS.SQUARE:
-                return true;
-            case OPERATIONS.SQRT:
-                return true;
+            case OPERATIONS.ADD:
+                result = numberLeft + numberRight;
+                break;
+            case OPERATIONS.SUB:
+                result = numberLeft - numberRight;
+                break;
+            case OPERATIONS.MUL:
+                result = numberLeft * numberRight;
+                break;
+            case OPERATIONS.DIV:
+                result = this.performDivision(numberLeft, numberRight);
+                break;
+            case OPERATIONS.POW_SHORT:
+                result = this.performExponentiation(numberLeft, numberRight);
+                break;
+            case OPERATIONS.NTH_ROOT_SHORT:
+                result = this.performNthRoot(numberLeft, numberRight);
+                break;
             default:
-                return false;
+                result = NaN;
         }
+        return this.numberToFixed(result);
     }
 
-    updateResult() {
-        if (this.isReadyToCalculate) {
-            this.parseNumber();
-            this.calculateResult();
-            this.resultToFixed();
-        }
-    }
-
-    calculateResult() {
-        if (this.operation) {
-            switch (this.operation) {
-                case OPERATIONS.ADD:
-                    this.result += this.currentNumberInput;
-                    break;
-                case OPERATIONS.SUB:
-                    this.result -= this.currentNumberInput;
-                    break;
-                case OPERATIONS.MUL:
-                    this.result *= this.currentNumberInput;
-                    break;
-                case OPERATIONS.DIV:
-                    this.performDivision();
-                    break;
-                case OPERATIONS.SQUARE:
-                    this.result = Math.pow(this.currentNumberInput, 2);
-                    break;
-                case OPERATIONS.SQRT:
-                    this.performSqrt();
-                    break;
-                case OPERATIONS.POW:
-                    this.result = Math.pow(this.result, this.currentNumberInput);
-                    break;
-                case OPERATIONS.NTH_ROOT:
-                    this.performNthRoot()
-                    break;
-                default:
-                    this.result = NaN;
+    performExponentiation(numberLeft, numberRight) {
+        if (numberLeft < 0) { 
+            numberLeft = numberLeft * -1;
+            if (numberRight % 2 !== 0) {
+                return -1 * Math.pow(numberLeft, numberRight); // np -3^-(1/3)
             }
-        } else {
-            this.result = this.currentNumberInput;
         }
+        return Math.pow(numberLeft, numberRight)
     }
 
-    performDivision() {
-        this.currentNumberInput === 0 ? alert("Dividing by zero is not allowed") : this.result /= this.currentNumberInput;
-    }
-
-    performNthRoot() {
-        this.result === 0 ? alert("Root can not be zero") : this.result = Math.pow(this.currentNumberInput, 1 / this.result);
-    }
-
-    performSqrt() {
-        this.currentNumberInput < 0 ? alert("Square root of a negative number is not allowed") : this.result = Math.sqrt(this.currentNumberInput);
-    }
-
-    clear(clearKey) {
-        switch (clearKey) {
-            case CLEAR_KEYS.C:
-                this.setDefault();
-                break;
-            case CLEAR_KEYS.CE:
-                this.clearEntry();
-                break;
-            default:
-                this.result = NaN;
+    performDivision(numberLeft, numberRight) {
+        if (numberRight === 0) {
+            alert(`Error in calculating ${this.currentOperation} : Dividing by zero is not allowed.`)
+            return NaN
         }
+        return numberLeft / numberRight;
     }
 
-    clearEntry() {
-        if (!this.isReadyToCalculate) {
-            this.setDefault();
-        } else {
-            this.isFloatingPointSet = false;
-            this.isInputTouched = false;
+    performNthRoot(index, radicand) {
+        if (index === 0) {
+            alert(`Error in calculating ${this.currentOperation} : Index of root can not be zero.`);
+            return NaN;
         }
+        else if (index % 2 === 0 && radicand < 0) {
+            alert(`Error in calculating ${this.currentOperation} : Can't perform the nth root operation - In order to calculate nth root of an negative radicand, the index has to be an odd number.`);
+            return NaN;
+        } else if (index % 2 === 1 && radicand < 0) {
+            return -1 * this.performExponentiation(Math.abs(radicand), 1 / index);
+        }
+
+        return this.performExponentiation(radicand, 1 / index);
     }
 }
